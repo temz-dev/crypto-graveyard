@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Crypto Graveyard</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="moon" aria-hidden="true"></div>
+    <div class="fog fog-1" aria-hidden="true"></div>
+    <div class="fog fog-2" aria-hidden="true"></div>
+    <h1 class="site-title">
+      <span aria-hidden="true">&#x1FA66;</span>
+      Crypto Graveyard
+      <span aria-hidden="true">&#x1FA66;</span>
+    </h1>
+    <p class="site-subtitle">Live prices, haunted sentiment &amp; the coins that didn&rsquo;t make it</p>
+  </header>
+
+  <!-- FEAR AND GREED GAUGE -->
+  <section class="section" id="section-gauge" aria-label="Fear and Greed meter">
+    <h2 class="section-heading candle-glow">
+      <span aria-hidden="true">&#x1F56F;&#xFE0F;</span> Fear &amp; Greed Meter
+    </h2>
+    <div class="gauge-wrapper">
+      <svg id="gauge-svg" viewBox="0 0 300 165" role="img"
+           aria-labelledby="gauge-title gauge-desc" class="gauge-svg">
+        <title id="gauge-title">Fear and Greed Gauge</title>
+        <desc id="gauge-desc">Semicircular sentiment gauge from Extreme Fear to Extreme Greed</desc>
+        <!-- Five band arcs across 180 degrees -->
+        <!-- Extreme Fear: 0-24 => -90deg to -46.8deg -->
+        <path class="gauge-band band-extreme-fear"
+              d="M 30 150 A 120 120 0 0 1 72.4 57.6" fill="none" stroke-width="22"/>
+        <!-- Fear: 25-49 => -46.8deg to 0deg -->
+        <path class="gauge-band band-fear"
+              d="M 72.4 57.6 A 120 120 0 0 1 150 30" fill="none" stroke-width="22"/>
+        <!-- Neutral: 50-54 => 0deg to 9deg -->
+        <path class="gauge-band band-neutral"
+              d="M 150 30 A 120 120 0 0 1 177.4 34.5" fill="none" stroke-width="22"/>
+        <!-- Greed: 55-74 => 9deg to 43.2deg -->
+        <path class="gauge-band band-greed"
+              d="M 177.4 34.5 A 120 120 0 0 1 240 57.6" fill="none" stroke-width="22"/>
+        <!-- Extreme Greed: 75-100 => 43.2deg to 90deg -->
+        <path class="gauge-band band-extreme-greed"
+              d="M 240 57.6 A 120 120 0 0 1 270 150" fill="none" stroke-width="22"/>
+        <!-- Band labels -->
+        <text class="gauge-label" x="22"  y="144" text-anchor="middle" font-size="7.5">Extreme</text>
+        <text class="gauge-label" x="22"  y="153" text-anchor="middle" font-size="7.5">Fear</text>
+        <text class="gauge-label" x="80"  y="50"  text-anchor="middle" font-size="7.5">Fear</text>
+        <text class="gauge-label" x="150" y="19"  text-anchor="middle" font-size="7.5">Neutral</text>
+        <text class="gauge-label" x="220" y="50"  text-anchor="middle" font-size="7.5">Greed</text>
+        <text class="gauge-label" x="278" y="144" text-anchor="middle" font-size="7.5">Extreme</text>
+        <text class="gauge-label" x="278" y="153" text-anchor="middle" font-size="7.5">Greed</text>
+        <!-- Needle: rotated by app.js; 0=value0 => -90deg, 100=value100 => +90deg -->
+        <g id="gauge-needle-group" transform="rotate(-90, 150, 150)">
+          <line id="gauge-needle" x1="150" y1="150" x2="150" y2="48"
+                class="gauge-needle" stroke-linecap="round"/>
+          <circle cx="150" cy="150" r="7" class="gauge-pivot"/>
+        </g>
+      </svg>
+      <div class="gauge-readout">
+        <span class="gauge-value" id="gauge-value">--</span>
+        <span class="gauge-band-label" id="gauge-band-label">Loading&#x2026;</span>
+      </div>
+      <p class="data-status" id="gauge-status" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <!-- LIVE PRICES -->
+  <section class="section" id="section-prices" aria-label="Live crypto prices">
+    <h2 class="section-heading candle-glow">
+      <span aria-hidden="true">&#x1F56F;&#xFE0F;</span> Live Prices
+    </h2>
+    <p class="data-status" id="prices-status" aria-live="polite"></p>
+    <div class="prices-table-wrap">
+      <table class="prices-table" id="prices-table"
+             aria-label="Top 10 cryptocurrencies by market cap">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Coin</th>
+            <th scope="col">Price (USD)</th>
+            <th scope="col">24h</th>
+            <th scope="col">Watch</th>
+          </tr>
+        </thead>
+        <tbody id="prices-tbody">
+          <tr class="loading-row">
+            <td colspan="5">Summoning market data&hellip;</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="last-updated" id="prices-updated"></p>
+  </section>
+
+  <!-- GRAVEYARD -->
+  <section class="section" id="section-graveyard" aria-label="Crypto graveyard">
+    <h2 class="section-heading candle-glow">
+      <span aria-hidden="true">&#x1F56F;&#xFE0F;</span> The Graveyard
+    </h2>
+    <p class="graveyard-intro">
+      Every stone teaches one failure pattern. Click to unearth the story.
+    </p>
+    <div class="filter-chips" role="group" aria-label="Filter by cause of death">
+      <button class="chip chip-active" data-filter="all">All</button>
+      <button class="chip" data-filter="ponzi">Ponzi / Fraud</button>
+      <button class="chip" data-filter="depeg">Depeg / Collapse</button>
+      <button class="chip" data-filter="rug">Rug Pull</button>
+      <button class="chip" data-filter="exchange">Exchange Failure</button>
+    </div>
+    <div class="graveyard-grid" id="graveyard-grid" aria-label="Tombstones"></div>
+  </section>
+
+  <!-- WATCHLIST -->
+  <section class="section" id="section-watchlist" aria-label="Your watchlist">
+    <h2 class="section-heading candle-glow">
+      <span aria-hidden="true">&#x1F56F;&#xFE0F;</span> Your Watchlist
+    </h2>
+    <p class="watchlist-hint" id="watchlist-hint">
+      Add coins from the Live Prices table using the <strong>+ Watch</strong> button.
+    </p>
+    <p class="watchlist-empty" id="watchlist-empty" aria-live="polite">
+      Your watchlist is empty. No coins haunt you&hellip; yet.
+    </p>
+    <table class="prices-table watchlist-table" id="watchlist-table"
+           aria-label="Your watchlisted coins" hidden>
+      <thead>
+        <tr>
+          <th scope="col">Coin</th>
+          <th scope="col">Price (USD)</th>
+          <th scope="col">24h</th>
+          <th scope="col">Remove</th>
+        </tr>
+      </thead>
+      <tbody id="watchlist-tbody"></tbody>
+    </table>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <p class="footer-sources">
+        Live prices via <a href="https://www.coingecko.com" target="_blank" rel="noopener">CoinGecko</a>
+        public markets API &mdash;
+        Market sentiment via <a href="https://alternative.me/crypto/fear-and-greed-index/" target="_blank" rel="noopener">alternative.me</a>
+        Fear &amp; Greed Index.
+      </p>
+      <p class="footer-snapshot">
+        Offline snapshots dated 2026-11-25 are shown when live data is unavailable.
+      </p>
+      <p class="footer-disclaimer">
+        &#x26A0;&#xFE0F; <strong>Educational only &mdash; not financial advice.</strong>
+        Dead-coin facts are real and sourced; see <code>data.js</code> for references.
+      </p>
+      <p class="footer-credit">Built for the Kiroween 2026 Costume Contest.</p>
+    </div>
+  </footer>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

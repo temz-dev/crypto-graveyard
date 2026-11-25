@@ -1,0 +1,204 @@
+/* styles.css - Crypto Graveyard haunted visual system */
+
+/* Reset */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+img, svg { display: block; max-width: 100%; }
+a { color: var(--clr-accent-orange); }
+a:hover { color: var(--clr-accent-purple); }
+button { font-family: inherit; cursor: pointer; }
+
+/* Custom properties */
+:root {
+  --clr-bg:            #0a090f;
+  --clr-bg-mid:        #110f1a;
+  --clr-bg-card:       #15121f;
+  --clr-bg-card-hover: #1c1829;
+  --clr-border:        #2a2440;
+  --clr-text:          #d6cfe8;
+  --clr-text-muted:    #7a718f;
+  --clr-accent-orange: #e8820c;
+  --clr-accent-purple: #9b59e8;
+  --clr-moon:          #fff8dc;
+  --clr-blood-red:     #c0392b;
+  --clr-ghost-green:   #27ae60;
+  --clr-extreme-fear:  #c0392b;
+  --clr-fear:          #e67e22;
+  --clr-neutral:       #f1c40f;
+  --clr-greed:         #2ecc71;
+  --clr-extreme-greed: #1abc9c;
+  --radius-card:       12px 12px 4px 4px;
+  --shadow-card:       0 4px 24px rgba(0,0,0,0.6);
+  --transition:        0.25s ease;
+}
+
+/* Base */
+body {
+  background-color: var(--clr-bg);
+  color: var(--clr-text);
+  font-family: Georgia, "Times New Roman", serif;
+  line-height: 1.65;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Header */
+.site-header {
+  position: relative;
+  text-align: center;
+  padding: 4rem 1rem 3rem;
+  background: linear-gradient(180deg, #06050d 0%, var(--clr-bg-mid) 100%);
+  overflow: hidden;
+  border-bottom: 1px solid var(--clr-border);
+}
+.site-title {
+  font-size: clamp(1.9rem, 6vw, 3.2rem);
+  color: var(--clr-accent-orange);
+  letter-spacing: 0.04em;
+  text-shadow: 0 0 18px rgba(232,130,12,.6), 0 2px 4px rgba(0,0,0,.8);
+  position: relative; z-index: 1;
+}
+.site-subtitle {
+  margin-top: 0.6rem;
+  color: var(--clr-text-muted);
+  font-size: clamp(0.85rem, 2.5vw, 1.05rem);
+  font-style: italic;
+  position: relative; z-index: 1;
+}
+.moon { position:absolute; top:1.4rem; right:7%; width:88px; height:88px; border-radius:50%; background:radial-gradient(circle at 38% 38%,#fffde7,#ffd54f 60%,#e6a817); box-shadow:0 0 20px 8px rgba(255,230,100,.35),0 0 60px 20px rgba(255,200,50,.15); animation:moonPulse 6s ease-in-out infinite; }
+@keyframes moonPulse { 0%,100%{ box-shadow:0 0 20px 8px rgba(255,230,100,.35); } 50%{ box-shadow:0 0 32px 14px rgba(255,230,100,.5); } }
+.fog { position:absolute; bottom:0; width:200%; height:70px; border-radius:50%; opacity:0.18; pointer-events:none; }
+.fog-1 { left:-50%; background:radial-gradient(ellipse at 50% 100%,#9b59e8 0%,transparent 70%); animation:fogDrift 18s ease-in-out infinite alternate; }
+.fog-2 { left:-20%; background:radial-gradient(ellipse at 50% 100%,#e8820c 0%,transparent 70%); animation:fogDrift 24s ease-in-out infinite alternate-reverse; }
+@keyframes fogDrift { 0%{ transform:translateX(0); } 100%{ transform:translateX(8%); } }
+
+/* Sections and candle-glow headings */
+.section { max-width:900px; margin:2.5rem auto; padding:0 1rem; }
+.section-heading { font-size:clamp(1.2rem,3.5vw,1.65rem); color:var(--clr-accent-orange); margin-bottom:1.2rem; padding-bottom:0.4rem; border-bottom:1px solid var(--clr-border); }
+.candle-glow { animation:candleFlicker 4s ease-in-out infinite; text-shadow:0 0 8px rgba(232,130,12,.5); }
+@keyframes candleFlicker {
+  0%,100% { text-shadow:0 0 8px rgba(232,130,12,.5); opacity:1; }
+  25%     { text-shadow:0 0 14px rgba(232,130,12,.8),0 0 30px rgba(232,130,12,.3); opacity:0.95; }
+  50%     { text-shadow:0 0 6px rgba(232,130,12,.4); opacity:0.98; }
+  75%     { text-shadow:0 0 18px rgba(232,130,12,.9),0 0 40px rgba(232,130,12,.2); opacity:0.93; }
+}
+.data-status { font-size:0.82rem; color:var(--clr-text-muted); margin-bottom:0.6rem; min-height:1.2em; }
+.data-status.offline { color:var(--clr-blood-red); font-weight:bold; }
+.last-updated { font-size:0.78rem; color:var(--clr-text-muted); margin-top:0.5rem; font-style:italic; }
+.loading-row td { text-align:center; color:var(--clr-text-muted); padding:1.5rem; font-style:italic; }
+
+/* Fear and Greed gauge */
+.gauge-wrapper { display:flex; flex-direction:column; align-items:center; gap:0.8rem; }
+.gauge-svg { width:min(340px,100%); height:auto; }
+.gauge-band { fill:none; stroke-linecap:butt; }
+.band-extreme-fear  { stroke:var(--clr-extreme-fear); }
+.band-fear          { stroke:var(--clr-fear); }
+.band-neutral       { stroke:var(--clr-neutral); }
+.band-greed         { stroke:var(--clr-greed); }
+.band-extreme-greed { stroke:var(--clr-extreme-greed); }
+.gauge-label { fill:var(--clr-text-muted); font-family:Georgia,serif; }
+.gauge-needle { stroke:var(--clr-moon); stroke-width:3; }
+.gauge-pivot  { fill:var(--clr-moon); }
+#gauge-needle-group { transition:transform var(--transition); }
+.gauge-readout { display:flex; flex-direction:column; align-items:center; gap:0.2rem; }
+.gauge-value { font-size:2.4rem; font-weight:bold; color:var(--clr-accent-orange); line-height:1; }
+.gauge-band-label { font-size:1rem; color:var(--clr-text-muted); letter-spacing:0.06em; text-transform:uppercase; }
+.gauge-band-label.extreme-fear  { color:var(--clr-extreme-fear); }
+.gauge-band-label.fear          { color:var(--clr-fear); }
+.gauge-band-label.neutral       { color:var(--clr-neutral); }
+.gauge-band-label.greed         { color:var(--clr-greed); }
+.gauge-band-label.extreme-greed { color:var(--clr-extreme-greed); }
+
+/* Prices table */
+.prices-table-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch; border:1px solid var(--clr-border); border-radius:8px; }
+.prices-table { width:100%; border-collapse:collapse; font-size:0.93rem; }
+.prices-table th { background:var(--clr-bg-mid); color:var(--clr-text-muted); font-weight:normal; font-size:0.78rem; letter-spacing:0.08em; text-transform:uppercase; padding:0.65rem 0.8rem; text-align:left; border-bottom:1px solid var(--clr-border); white-space:nowrap; }
+.prices-table td { padding:0.65rem 0.8rem; border-bottom:1px solid var(--clr-border); vertical-align:middle; }
+.prices-table tbody tr:last-child td { border-bottom:none; }
+.prices-table tbody tr:hover { background:var(--clr-bg-card); }
+.coin-rank { color:var(--clr-text-muted); font-size:0.8rem; width:2rem; }
+.coin-name-cell { display:flex; align-items:center; gap:0.5rem; }
+.coin-symbol { font-size:0.72rem; color:var(--clr-text-muted); background:var(--clr-bg-mid); border:1px solid var(--clr-border); border-radius:4px; padding:0.1rem 0.35rem; letter-spacing:0.05em; }
+.coin-price { font-variant-numeric:tabular-nums; white-space:nowrap; }
+.change-chip { display:inline-block; padding:0.15rem 0.5rem; border-radius:999px; font-size:0.8rem; font-variant-numeric:tabular-nums; white-space:nowrap; }
+.change-up   { background:rgba(39,174,96,.15);  color:var(--clr-ghost-green); }
+.change-down { background:rgba(192,57,43,.15);  color:var(--clr-blood-red); }
+.change-flat { background:rgba(122,113,143,.15); color:var(--clr-text-muted); }
+
+/* Watch / remove buttons */
+.btn-watch { background:transparent; border:1px solid var(--clr-accent-purple); color:var(--clr-accent-purple); border-radius:6px; padding:0.25rem 0.6rem; font-size:0.78rem; transition:background var(--transition),color var(--transition); white-space:nowrap; }
+.btn-watch:hover { background:var(--clr-accent-purple); color:#fff; }
+.btn-watch.watching { background:var(--clr-accent-purple); color:#fff; border-color:var(--clr-accent-purple); }
+.btn-remove { background:transparent; border:1px solid var(--clr-blood-red); color:var(--clr-blood-red); border-radius:6px; padding:0.25rem 0.6rem; font-size:0.78rem; transition:background var(--transition),color var(--transition); white-space:nowrap; }
+.btn-remove:hover { background:var(--clr-blood-red); color:#fff; }
+
+/* Graveyard filter chips */
+.graveyard-intro { color:var(--clr-text-muted); font-style:italic; margin-bottom:1rem; font-size:0.92rem; }
+.filter-chips { display:flex; flex-wrap:wrap; gap:0.5rem; margin-bottom:1.4rem; }
+.chip { background:var(--clr-bg-card); border:1px solid var(--clr-border); color:var(--clr-text-muted); border-radius:999px; padding:0.3rem 0.9rem; font-size:0.82rem; transition:background var(--transition),border-color var(--transition),color var(--transition); }
+.chip:hover { border-color:var(--clr-accent-orange); color:var(--clr-accent-orange); }
+.chip-active { background:var(--clr-accent-orange); border-color:var(--clr-accent-orange); color:#fff; }
+
+/* Tombstone grid */
+.graveyard-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:1.4rem; }
+/* Tombstone card */
+.tombstone { background:var(--clr-bg-card); border:1px solid var(--clr-border); border-radius:12px 12px 4px 4px; box-shadow:var(--shadow-card); padding:1.2rem 1rem 1rem; cursor:pointer; transition:transform var(--transition),box-shadow var(--transition),border-color var(--transition); position:relative; overflow:hidden; }
+.tombstone::before { content:""; display:block; width:60%; height:4px; background:linear-gradient(90deg,transparent,var(--clr-accent-purple),transparent); margin:0 auto 0.8rem; border-radius:2px; opacity:0.6; }
+.tombstone:hover { transform:translateY(-3px); box-shadow:0 8px 32px rgba(0,0,0,.7); border-color:var(--clr-accent-purple); }
+.tombstone[aria-expanded="true"] { border-color:var(--clr-accent-orange); }
+.tombstone-name { font-size:1.05rem; color:var(--clr-text); font-weight:bold; text-align:center; }
+.tombstone-symbol { font-size:0.75rem; color:var(--clr-text-muted); text-align:center; letter-spacing:0.08em; margin-bottom:0.6rem; }
+.tombstone-rip { font-size:0.82rem; color:var(--clr-accent-purple); text-align:center; margin-bottom:0.4rem; }
+.tombstone-peak { font-size:0.8rem; color:var(--clr-text-muted); text-align:center; margin-bottom:0.6rem; }
+.tombstone-cause { display:block; font-size:0.72rem; letter-spacing:0.06em; text-transform:uppercase; border-radius:4px; padding:0.15rem 0.5rem; text-align:center; margin:0 auto 0.5rem; width:fit-content; }
+.cause-ponzi    { background:rgba(192,57,43,.2);  color:#e74c3c; }
+.cause-depeg    { background:rgba(230,126,34,.2); color:#e67e22; }
+.cause-rug      { background:rgba(155,89,232,.2); color:#9b59b6; }
+.cause-exchange { background:rgba(52,152,219,.2); color:#3498db; }
+.tombstone-expand-hint { font-size:0.75rem; color:var(--clr-text-muted); text-align:center; margin-top:0.4rem; font-style:italic; }
+/* Tombstone expanded story panel */
+.tombstone-story { display:none; margin-top:0.8rem; padding-top:0.8rem; border-top:1px solid var(--clr-border); font-size:0.87rem; color:var(--clr-text); line-height:1.6; }
+.tombstone[aria-expanded="true"] .tombstone-story { display:block; }
+.tombstone[aria-expanded="true"] .tombstone-expand-hint { display:none; }
+.tombstone-lesson { margin-top:0.6rem; padding:0.5rem 0.7rem; background:var(--clr-bg-mid); border-left:3px solid var(--clr-accent-orange); border-radius:0 4px 4px 0; font-size:0.84rem; font-style:italic; color:var(--clr-accent-orange); }
+.tombstone-source { margin-top:0.5rem; font-size:0.72rem; color:var(--clr-text-muted); word-break:break-word; }
+.tombstone[hidden] { display:none; }
+
+/* Watchlist */
+.watchlist-hint { color:var(--clr-text-muted); font-size:0.88rem; margin-bottom:0.8rem; }
+.watchlist-empty { color:var(--clr-text-muted); font-style:italic; padding:1.5rem; text-align:center; border:1px dashed var(--clr-border); border-radius:8px; }
+.watchlist-table { margin-top:0.6rem; }
+
+/* Footer */
+.site-footer { margin-top:4rem; padding:2rem 1rem 2.5rem; background:var(--clr-bg-mid); border-top:1px solid var(--clr-border); font-size:0.82rem; color:var(--clr-text-muted); }
+.footer-inner { max-width:900px; margin:0 auto; display:flex; flex-direction:column; gap:0.5rem; }
+.footer-disclaimer { color:var(--clr-accent-orange); }
+.footer-disclaimer strong { font-weight:bold; }
+.footer-credit { color:var(--clr-text-muted); }
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; }
+  .moon { animation:none; }
+  .fog-1, .fog-2 { animation:none; }
+  .candle-glow { animation:none; text-shadow:none; }
+  #gauge-needle-group { transition:none; }
+}
+
+/* Mobile — max-width 480px */
+@media (max-width: 480px) {
+  .section { padding: 0 0.6rem; }
+  .site-header { padding: 2.5rem 0.75rem 2rem; }
+  .moon { width: 56px; height: 56px; top: 0.8rem; right: 4%; }
+  .site-title { font-size: 1.5rem; }
+  .section-heading { font-size: 1.1rem; }
+  .gauge-svg { width: min(260px, 100%); }
+  .gauge-value { font-size: 1.8rem; }
+  .graveyard-grid { grid-template-columns: 1fr; }
+  .prices-table th, .prices-table td { padding: 0.5rem 0.5rem; font-size: 0.82rem; }
+  .filter-chips { gap: 0.35rem; }
+  .chip { padding: 0.25rem 0.65rem; font-size: 0.76rem; }
+  .prices-table-wrap { border-radius: 6px; }
+  .watchlist-table { font-size: 0.82rem; }
+  .footer-inner { font-size: 0.78rem; }
+}
